@@ -1,8 +1,10 @@
 package stepdefintions;
 
-import java.io.FileInputStream;
-import java.util.Properties;
+import java.io.IOException;
+
 import org.junit.Assert;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -14,25 +16,21 @@ import utilities.TestBase;
 
 public class SelectFlightStepDefinition extends TestBase {
 
-	public Properties prop;
-	int departureFlightPrice=0;
-	int returnFlightPrice=0;
 	
+	private int departureFlightPrice=0;
+	private int returnFlightPrice=0;
 	
 	HomePage homepage;
 	SelectPage selectpage;
 	
+	@Before
+	public void setUp() throws IOException {
+		initializeDriver();
+	}
 	
 	@Given("^user navigate to Home page$")
 	public void user_navigate_to_Home_page() throws Throwable {
-		
-		prop= new Properties();
-		FileInputStream fis=new FileInputStream("./Configurations/config.properties");
-
-		prop.load(fis);		
-		driver= initializeDriver(prop.getProperty("browser"));
-		driver.get(prop.getProperty("url"));
-		
+		openApplication();		
 	}
 
 	@Then("^user verifies One Way radio button is selected$")
@@ -97,6 +95,11 @@ public class SelectFlightStepDefinition extends TestBase {
 	public void total_fare_should_be_updated() throws Throwable {
 	    Assert.assertEquals(departureFlightPrice*2,selectpage.getDepatureFare());
 	    Assert.assertEquals(returnFlightPrice*2,selectpage.getReturnFare());
+	}
+	
+	@After
+	public void tearDown() {
+		closeDriver();
 	}
 	
 	
